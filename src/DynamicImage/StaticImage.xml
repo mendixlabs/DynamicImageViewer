@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<widget id="DynamicImage.widget.StaticImage" needsEntityContext="false" xmlns="http://www.mendix.com/widget/1.0/">
+    <name>Static Image</name>
+    <description>Displays an image using an URL or predefined Image</description>
+
+    <icon>iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
+        U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAHfSURBVDjLpZO9a5NhFMV/bxowYvNRjf1I
+        oCDo0KFJBVHEVbeCi5N/gM6KruLi6KiDKA6KIC6CQwdtBxfRrUGHFlTQIlikjTFpkua55zo8r7aD
+        ipALd3keOOdwzrmJuzPMZF/cOPFXBMmRHJMTTJiJYCIEESy+ZQGqczPIDNxxd/AMDriBu+MSCkJm
+        SA4CJ8Pym+UIIAs0177S3Wz9F3O+WGCiMrmjwM3pbrZ4fvo17kR237XAtcolRvdOA+L+9TscHB/H
+        TGQAlLqwuHWbxa1b9JMVTBDSHRi82qijbgPXNsGEpx5kouYo+2jpI/3kCUudiwzUJBgMAoQAjf4Z
+        FtZP0mq/x0xIYPJUQQoQLHAsX8fMeNk7y4DVCGKw0q7ytHmByx/u/lYgOVnJUbBomAa8azWYr5b5
+        0unRGZln48ccYzrH5/VTtHuTKIxQk8dUdgMEE/XyN2YPTFHJHaZWFPIan/KriEccqT5ExJi15Fiw
+        WCSTo+CYiYk9h5CL4NvIhSOmctOxCwgh3J3vauAWnc8GEzInt2+U3s1nuEWwmPlOByzthuSUSyV+
+        XUDWTOAJxbEyhcJ+pPgxc/4KnbUFQOTKx3n74B5uQhI4JEkMMHl8ddZ3d/tfzH+aZNhrzDDk/ARf
+        G6G/LNZPQgAAAABJRU5ErkJggg==</icon>
+
+    <properties>
+        <property key="defaultImage" type="image"	defaultValue="" required="false">
+            <caption>Image</caption>
+            <category>Appearance</category>
+            <description>
+                The image to display. Use either this property or the 'Image URL' property. 
+            </description>
+        </property>
+        <property key="imageurl" type="string"	defaultValue="" required="false">
+            <caption>Image URL</caption>
+            <category>Appearance</category>
+            <description>
+                URL of the image. Use either this property or the 'Image' property
+            </description>
+        </property>
+		<property key="alt" type="string" defaultValue="loading..."  required="true">
+            <caption>Alt Caption</caption>
+            <category>Appearance</category>
+            <description>Alternative caption which will be shown when the image cannot be loaded.</description>
+        </property>
+    </properties>
+</widget>
+
