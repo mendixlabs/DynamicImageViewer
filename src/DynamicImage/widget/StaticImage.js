@@ -38,7 +38,7 @@ define([
 
         postCreate: function () {
             console.log(this.id + ".postCreate");
-            this._updateRendering(function(){});
+            this._updateRendering();
         },
 
         update: function (obj, callback) {
@@ -55,7 +55,9 @@ define([
             } else {
                 this.imageNode.src = this.defaultImage;
             }
-            callback();
+			
+			if (callback)
+            	callback();
         },
 
         // Reset subscriptions.

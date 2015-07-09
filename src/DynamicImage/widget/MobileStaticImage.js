@@ -29,28 +29,18 @@ define([
         // _TemplatedMixin will create our dom node using this HTML template.
         templateString: widgetTemplate,
 
-        // Parameters configured in the Modeler.
-        mfToExecute: "",
-        messageString: "",
-        backgroundColor: "",
-
-        // Internal variables. Non-primitives created in the prototype are shared between all widget instances.
         _handles: null,
         _contextObj: null,
-        _alertDiv: null,
 
-        // dojo.declare.constructor is called to construct the widget instance. Implement to initialize non-primitive properties.
         constructor: function () {
             this._handles = [];
         },
 
-        // dijit._WidgetBase.postCreate is called after constructing the widget. Implement to do extra setup work.
         postCreate: function () {
             console.log(this.id + ".postCreate");
-            this._updateRendering(function(){});
+            this._updateRendering();
         },
 
-        // mxui.widget._WidgetBase.update is called when context is changed or initialized. Implement to re-render and / or fetch data.
         update: function (obj, callback) {
             console.log(this.id + ".update");
             this._contextObj = obj;
@@ -58,7 +48,6 @@ define([
             this._updateRendering(callback);
         },
 
-        // mxui.widget._WidgetBase.update is called when context is changed or initialized. Implement to re-render and / or fetch data.
         applyContext: function (context, callback) {
             console.log(this.id + ".applyContext");
             this._contextContext = context;
@@ -79,20 +68,6 @@ define([
             }
         },
 
-        // mxui.widget._WidgetBase.enable is called when the widget should enable editing. Implement to enable editing if widget is input widget.
-        enable: function () {},
-
-        // mxui.widget._WidgetBase.enable is called when the widget should disable editing. Implement to disable editing if widget is input widget.
-        disable: function () {},
-
-        // mxui.widget._WidgetBase.resize is called when the page"s layout is recalculated. Implement to do sizing calculations. Prefer using CSS instead.
-        resize: function (box) {},
-
-        // mxui.widget._WidgetBase.uninitialize is called when the widget is destroyed. Implement to do special tear-down work.
-        uninitialize: function () {
-            // Clean up listeners, helper objects, etc. There is no need to remove listeners added with this.connect / this.subscribe / this.own.
-        },
-
         // Rerender the interface.
         _updateRendering: function (callback) {
             if (this.imageurl !== '') {
@@ -100,7 +75,9 @@ define([
             } else {
                 this.imageNode.src = this.defaultImage;
             }
-            callback();
+			
+			if (callback)
+            	callback();
         },
 
         // Reset subscriptions.

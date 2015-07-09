@@ -29,29 +29,18 @@ define([
         // _TemplatedMixin will create our dom node using this HTML template.
         templateString: widgetTemplate,
 
-        // Parameters configured in the Modeler.
-        mfToExecute: "",
-        messageString: "",
-        backgroundColor: "",
-
-        // Internal variables. Non-primitives created in the prototype are shared between all widget instances.
         _handles: null,
         _contextObj: null,
-        _contextContext: null,
-        _alertDiv: null,
 
-        // dojo.declare.constructor is called to construct the widget instance. Implement to initialize non-primitive properties.
         constructor: function () {
             this._handles = [];
         },
 
-        // dijit._WidgetBase.postCreate is called after constructing the widget. Implement to do extra setup work.
         postCreate: function () {
             console.log(this.id + ".postCreate");
-            this._updateRendering(function(){});
+            this._updateRendering();
         },
 
-        // mxui.widget._WidgetBase.update is called when context is changed or initialized. Implement to re-render and / or fetch data.
         update: function (obj, callback) {
             console.log(this.id + ".update");
             this._contextObj = obj;
@@ -63,10 +52,8 @@ define([
             }
         },
 
-        // mxui.widget._WidgetBase.update is called when context is changed or initialized. Implement to re-render and / or fetch data.
         applyContext: function (context, callback) {
             console.log(this.id + ".applyContext");
-            this._contextContext = context;
             if (context && !!context.getTrackId()) {
                 var obj =  context.getTrackObject();
                 if (obj !== null) {
@@ -139,8 +126,9 @@ define([
             if (!loaded) {
                 this._setToDefaultImage();
             }
-
-            callback();
+			
+			if (callback)
+            	callback();
         },
 
         _loadImagefromUrl : function(url) {
