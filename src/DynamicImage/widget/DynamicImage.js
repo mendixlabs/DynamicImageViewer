@@ -1,21 +1,3 @@
-/*jslint white:true, nomen: true, plusplus: true */
-/*global mx, define, require, browser, devel, console, document, jQuery, window */
-/*mendix */
-/*
-    DynamicImage
-    ========================
-
-    @file      : DynamicImage.js
-    @version   : 1.1
-    @author    : Gerhard Richard Edens
-    @date      : Tue, 09 Jun 2015 07:51:58 GMT
-    @copyright : Mendix bv
-    @license   : Apache 2
-
-    Documentation
-    ========================
-    Describe your widget here.
-*/
 
 define([
     "dojo/_base/declare", "mxui/widget/_WidgetBase", "dijit/_TemplatedMixin",
@@ -37,12 +19,12 @@ define([
         },
 
         postCreate: function () {
-            console.log(this.id + ".postCreate");
+            logger.debug(this.id + ".postCreate");
             this._updateRendering();
         },
 
         update: function (obj, callback) {
-            console.log(this.id + ".update");
+            logger.debug(this.id + ".update");
             this._contextObj = obj;
             if (obj !== null) {
                 this._resetSubscriptions();
@@ -53,7 +35,7 @@ define([
         },
 
         applyContext: function (context, callback) {
-            console.log(this.id + ".applyContext");
+            logger.debug(this.id + ".applyContext");
             if (context && !!context.getTrackId()) {
                 var obj =  context.getTrackObject();
                 if (obj !== null) {
@@ -72,7 +54,7 @@ define([
         },
 
         uninitialize: function () {
-            console.log(this.id + ".uninitialize");
+            logger.debug(this.id + ".uninitialize");
             try {
                 if (this._handles) {
                     this._handles.forEach(function (handle, i) {
@@ -81,20 +63,20 @@ define([
                     this._handles = [];
                 }
             } catch (e) {
-                console.warn('Unitialize of Dynamic Image Viewer failed');
+                console.warn("Unitialize of Dynamic Image Viewer failed");
             }
         },
 
         // Rerender the interface.
         _updateRendering: function (callback) {
-            console.log(this.id + "._updateRendering");
+            logger.debug(this.id + "._updateRendering");
 
             var targetObj,
                 loaded = false;
 
             if (this._contextObj !== null) {
                 try {
-                    if (this.imageattr !== '') {
+                    if (this.imageattr !== "") {
                         if (this.imageattr.indexOf("/") === -1) {
                             loaded = this._loadImagefromUrl(this._contextObj.get(this.imageattr));
                         } else {
@@ -116,23 +98,23 @@ define([
                     }
                     this.connect(this.imageNode, "onclick", this.execclick);
                 } catch (err) {
-                    console.warn(this.id +'.setDataobject: error while loading image' + err);
+                    console.warn(this.id +".setDataobject: error while loading image" + err);
                     loaded = false;
                 }
             } else {
-                console.warn(this.id + '.setDataobject: received null object');
+                console.warn(this.id + ".setDataobject: received null object");
             }
 
             if (!loaded) {
                 this._setToDefaultImage();
             }
-			
-			if (callback)
-            	callback();
+
+            if (callback)
+                callback();
         },
 
         _loadImagefromUrl : function(url) {
-            console.log(this.id + "._loadImagefromUrl");
+            logger.debug(this.id + "._loadImagefromUrl");
 
             if (url !== "" && typeof url !== "undefined" && url !== null) {
                 this.imageNode.onerror = lang.hitch(this, this._setToDefaultImage);
@@ -147,7 +129,7 @@ define([
         },
 
         _resizeImage: function() {
-            console.log(this.id + "._resizeImage");
+            logger.debug(this.id + "._resizeImage");
             var origw, origh, factorw, factorh, factor;
             origw = this.imageNode.width;
             origh = this.imageNode.height;
@@ -156,14 +138,14 @@ define([
                 factorh = this.height / origh;
                 factor = (factorw < factorh ? factorw : factorh);
                 if (factor < 1) {//check prevents upscaling
-                    domStyle.add(this.imageNode, 'width',  (factor * origw) + 'px');
-                    domStyle.add(this.imageNode, 'height', (factor * origh) + 'px');
+                    domStyle.add(this.imageNode, "width",  (factor * origw) + "px");
+                    domStyle.add(this.imageNode, "height", (factor * origh) + "px");
                 }
             }
         },
 
         _setToDefaultImage : function() {
-            console.log(this.id + "._setToDefaultImage");
+            logger.debug(this.id + "._setToDefaultImage");
             if (this.imageNode) {
                 this.imageNode.onerror = null;  //do not catch exceptions when loading default
                 this.imageNode.src = this.defaultImage;
@@ -172,7 +154,7 @@ define([
 
         _execClick : function(index) {
             if (this._contextObj !== null && this.imageNode) {
-                if (this.clickmicroflow !== '')
+                if (this.clickmicroflow !== "")
                 {
                     mx.data.action({
                         params          : {
@@ -187,10 +169,10 @@ define([
                         }
                     });
                 }
-                if (this.linkattr !== '')
+                if (this.linkattr !== "")
                 {
                     var url = this._contextObj.get(this.linkattr);
-                    if (url !== '' && url !== undefined && url !== null) {
+                    if (url !== "" && url !== undefined && url !== null) {
                         window.open(url, this.linktarget);
                     }
                 }
@@ -199,7 +181,7 @@ define([
 
         // Reset subscriptions.
         _resetSubscriptions: function () {
-            console.log(this.id + "._resetSubscriptions");
+            logger.debug(this.id + "._resetSubscriptions");
             var _objectHandle = null;
 
             // Release handles on previous object, if any.
@@ -210,7 +192,7 @@ define([
                 this._handles = [];
             }
 
-            // When a mendix object exists create subscribtions. 
+            // When a mendix object exists create subscribtions.
             if (this._contextObj) {
                 _objectHandle = this.subscribe({
                     guid: this._contextObj.getGuid(),
