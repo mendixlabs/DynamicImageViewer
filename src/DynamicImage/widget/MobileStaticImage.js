@@ -30,40 +30,21 @@ define([
             this._updateRendering(callback);
         },
 
-        applyContext: function (context, callback) {
-            logger.debug(this.id + ".applyContext");
-            this._contextContext = context;
-            if (context && !!context.getTrackId()) {
-                var obj =  context.getTrackObject();
-                if (obj !== null) {
-                    this._contextObj = obj;
-                    this._updateRendering(callback);
-                } else {
-                    mx.data.get({
-                        guid    : context.getTrackId(),
-                        callback : function(obj) {
-                            this._contextObj = obj;
-                            this._updateRendering(callback);
-                        }
-                    }, this);
-                }
-            }
-        },
-
         // Rerender the interface.
         _updateRendering: function (callback) {
+            logger.debug(this.id + "._updateRendering");
             if (this.imageurl !== "") {
                 this.imageNode.src = this.imageurl;
             } else {
                 this.imageNode.src = this.defaultImage;
             }
 
-            if (callback)
-                callback();
+            mendix.lang.nullExec(callback);
         },
 
         // Reset subscriptions.
         _resetSubscriptions: function () {
+            logger.debug(this.id + "._resetSubscriptions");
             var _objectHandle = null;
 
             // Release handles on previous object, if any.

@@ -20,7 +20,6 @@ define([
 
         postCreate: function () {
             logger.debug(this.id + ".postCreate");
-            this._updateRendering();
         },
 
         update: function (obj, callback) {
@@ -32,18 +31,19 @@ define([
 
         // Rerender the interface.
         _updateRendering: function (callback) {
+            logger.debug(this.id + "._updateRendering");
             if (this.imageurl !== "") {
                 this.imageNode.src = this.imageurl;
             } else {
                 this.imageNode.src = this.defaultImage;
             }
 
-            if (callback)
-                callback();
+            mendix.lang.nullExec(callback);
         },
 
         // Reset subscriptions.
         _resetSubscriptions: function () {
+            logger.debug(this.id + "._resetSubscriptions");
             var _objectHandle = null;
 
             // Release handles on previous object, if any.

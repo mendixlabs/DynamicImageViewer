@@ -30,26 +30,13 @@ define([
                 this._resetSubscriptions();
                 this._updateRendering(callback);
             } else {
-                callback();
-            }
-        },
-
-        applyContext: function (context, callback) {
-            logger.debug(this.id + ".applyContext");
-            if (context && !!context.getTrackId()) {
-                var obj =  context.getTrackObject();
-                if (obj !== null) {
-                    this._contextObj = obj;
-                    this._updateRendering(callback);
-                } else {
-                    mx.data.get({
-                        guid    : context.getTrackId(),
-                        callback : function(obj) {
-                            this._contextObj = obj;
-                            this._updateRendering(callback);
-                        }
-                    }, this);
-                }
+                mx.data.get({
+                   guid    : this.mxcontext.getTrackId(),
+                   callback : function(obj) {
+                       this._contextObj = obj;
+                       this._updateRendering(callback);
+                   }
+               }, this);
             }
         },
 
@@ -153,14 +140,17 @@ define([
         },
 
         _execClick : function(index) {
+            logger.debug(this.id + "._execClick");
             if (this._contextObj !== null && this.imageNode) {
-                if (this.clickmicroflow !== "")
-                {
+                if (this.clickmicroflow !== "") {
                     mx.data.action({
                         params          : {
                             applyto     : "selection",
                             actionname  : this.clickmicroflow,
                             guids       : [this._contextObj.getGuid()]
+                        },
+                        store: {
+                            caller: this.mxform
                         },
                         callback        : function(obj) {
                         },
@@ -169,8 +159,7 @@ define([
                         }
                     });
                 }
-                if (this.linkattr !== "")
-                {
+                if (this.linkattr !== "") {
                     var url = this._contextObj.get(this.linkattr);
                     if (url !== "" && url !== undefined && url !== null) {
                         window.open(url, this.linktarget);
