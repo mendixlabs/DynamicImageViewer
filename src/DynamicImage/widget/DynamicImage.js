@@ -20,7 +20,7 @@ define([
 
         postCreate: function () {
             logger.debug(this.id + ".postCreate");
-            this._updateRendering();
+            // this._updateRendering();
         },
 
         update: function (obj, callback) {
@@ -46,11 +46,11 @@ define([
                 if (this._handles) {
                     this._handles.forEach(function (handle, i) {
                         this.unsubscribe(handle);
-                    });
+                    }, this);
                     this._handles = [];
                 }
             } catch (e) {
-                console.warn("Unitialize of Dynamic Image Viewer failed");
+                console.warn("Uninitialize of Dynamic Image Viewer failed");
             }
         },
 
@@ -96,8 +96,7 @@ define([
                 this._setToDefaultImage();
             }
 
-            if (callback)
-                callback();
+            callback && callback();
         },
 
         _loadImagefromUrl : function(url) {
