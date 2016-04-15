@@ -20,7 +20,7 @@ define([
 
         postCreate: function () {
             logger.debug(this.id + ".postCreate");
-            this._updateRendering();
+            // this._updateRendering();
         },
 
         update: function (obj, callback) {
@@ -46,11 +46,11 @@ define([
                 if (this._handles) {
                     this._handles.forEach(function (handle, i) {
                         this.unsubscribe(handle);
-                    });
+                    }, this);
                     this._handles = [];
                 }
             } catch (e) {
-                console.warn("Unitialize of Dynamic Image Viewer failed");
+                console.warn("Uninitialize of Dynamic Image Viewer failed");
             }
         },
 
@@ -70,7 +70,7 @@ define([
                             targetObj = this._contextObj.get(this.imageattr.split("/")[0]);
                             if (/\d+/.test(targetObj)) { //guid only
                                 loaded = true;
-                                this.setToDefaultImage();
+                                this._setToDefaultImage();
                                 mx.data.get({ //fetch the object first
                                     guid : targetObj,
                                     nocache : true,
@@ -96,8 +96,7 @@ define([
                 this._setToDefaultImage();
             }
 
-            if (callback)
-                callback();
+            callback && callback();
         },
 
         _loadImagefromUrl : function(url) {
