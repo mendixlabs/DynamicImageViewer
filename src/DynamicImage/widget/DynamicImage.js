@@ -70,7 +70,7 @@ define([
                             targetObj = this._contextObj.get(this.imageattr.split("/")[0]);
                             if (/\d+/.test(targetObj)) { //guid only
                                 loaded = true;
-                                this.setToDefaultImage();
+                                this._setToDefaultImage();
                                 mx.data.get({ //fetch the object first
                                     guid : targetObj,
                                     nocache : true,
