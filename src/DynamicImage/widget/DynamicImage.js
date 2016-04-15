@@ -32,10 +32,10 @@ define([
             } else {
                 mx.data.get({
                    guid    : this.mxcontext.getTrackId(),
-                   callback : function(obj) {
+                   callback : lang.hitch(this, function(obj) {
                        this._contextObj = obj;
                        this._updateRendering(callback);
-                   }
+                   })
                }, this);
             }
         },
@@ -70,7 +70,7 @@ define([
                             targetObj = this._contextObj.get(this.imageattr.split("/")[0]);
                             if (/\d+/.test(targetObj)) { //guid only
                                 loaded = true;
-                                this.setToDefaultImage();
+                                this._setToDefaultImage();
                                 mx.data.get({ //fetch the object first
                                     guid : targetObj,
                                     nocache : true,
@@ -83,7 +83,7 @@ define([
                             }
                         }
                     }
-                    this.connect(this.imageNode, "onclick", this.execclick);
+                    this.connect(this.imageNode, "onclick", this._execClick);
                 } catch (err) {
                     console.warn(this.id +".setDataobject: error while loading image" + err);
                     loaded = false;
