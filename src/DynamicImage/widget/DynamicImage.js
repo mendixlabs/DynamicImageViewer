@@ -20,7 +20,6 @@ define([
 
         postCreate: function () {
             logger.debug(this.id + ".postCreate");
-            this._updateRendering();
         },
 
         update: function (obj, callback) {

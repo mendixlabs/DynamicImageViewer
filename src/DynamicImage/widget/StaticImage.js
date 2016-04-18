@@ -24,6 +24,7 @@ define([
 
         update: function (obj, callback) {
             logger.debug(this.id + ".update");
+
             this._contextObj = obj;
             this._resetSubscriptions();
             this._updateRendering(callback);
