@@ -35,6 +35,10 @@ define([
                    callback : lang.hitch(this, function(obj) {
                        this._contextObj = obj;
                        this._updateRendering(callback);
+                   }),
+                   error: lang.hitch(this, function (err) {
+                       console.warn(this.id + ".update mx.data.get failed");
+                       mendix.lang.nullExec(callback);
                    })
                }, this);
             }
@@ -96,8 +100,7 @@ define([
                 this._setToDefaultImage();
             }
 
-            if (callback)
-                callback();
+            mendix.lang.nullExec(callback);
         },
 
         _loadImagefromUrl : function(url) {

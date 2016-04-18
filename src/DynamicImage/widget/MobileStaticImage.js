@@ -20,11 +20,11 @@ define([
 
         postCreate: function () {
             logger.debug(this.id + ".postCreate");
-            this._updateRendering();
         },
 
         update: function (obj, callback) {
             logger.debug(this.id + ".update");
+
             this._contextObj = obj;
             this._resetSubscriptions();
             this._updateRendering(callback);
@@ -33,6 +33,7 @@ define([
         // Rerender the interface.
         _updateRendering: function (callback) {
             logger.debug(this.id + "._updateRendering");
+
             if (this.imageurl !== "") {
                 this.imageNode.src = this.imageurl;
             } else {

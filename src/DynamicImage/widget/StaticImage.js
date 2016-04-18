@@ -32,6 +32,7 @@ define([
         // Rerender the interface.
         _updateRendering: function (callback) {
             logger.debug(this.id + "._updateRendering");
+
             if (this.imageurl !== "") {
                 this.imageNode.src = this.imageurl;
             } else {
