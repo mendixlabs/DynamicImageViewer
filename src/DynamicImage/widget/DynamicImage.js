@@ -18,7 +18,7 @@ define([
             this._handles = [];
         },
 
-        postCreate: function () {
+        postCreate: function () { 
             logger.debug(this.id + ".postCreate");
         },
 
@@ -48,7 +48,7 @@ define([
             try {
                 if (this._handles) {
                     this._handles.forEach(function (handle, i) {
-                        this.unsubscribe(handle);
+                        mx.data.unsubscribe(handle);
                     });
                     this._handles = [];
                 }
@@ -120,16 +120,19 @@ define([
         _resizeImage: function() {
             logger.debug(this.id + "._resizeImage");
             var origw, origh, factorw, factorh, factor;
-            origw = this.imageNode.width;
-            origh = this.imageNode.height;
-            if (origw > 0 && origh > 0) {//only apply if an valid image has been loaded
-                factorw = this.width / origw;
-                factorh = this.height / origh;
-                factor = (factorw < factorh ? factorw : factorh);
-                if (factor < 1) {//check prevents upscaling
-                    domStyle.add(this.imageNode, "width",  (factor * origw) + "px");
-                    domStyle.add(this.imageNode, "height", (factor * origh) + "px");
-                }
+
+            if (this.imageNode) {   // May be called after uninitialize
+              origw = this.imageNode.width;
+              origh = this.imageNode.height;
+              if (origw > 0 && origh > 0) {//only apply if an valid image has been loaded
+                  factorw = this.width / origw;
+                  factorh = this.height / origh;
+                  factor = (factorw < factorh ? factorw : factorh);
+                  if (factor < 1) {//check prevents upscaling
+                      domStyle.add(this.imageNode, "width",  (factor * origw) + "px");
+                      domStyle.add(this.imageNode, "height", (factor * origh) + "px");
+                  }
+              }
             }
         },
 
@@ -183,9 +186,9 @@ define([
                 this._handles = [];
             }
 
-            // When a mendix object exists create subscribtions.
+            // When a mendix object exists create subscriptions.
             if (this._contextObj) {
-                _objectHandle = this.subscribe({
+                _objectHandle = mx.data.subscribe({
                     guid: this._contextObj.getGuid(),
                     callback: lang.hitch(this, function (guid) {
                         this._updateRendering();
