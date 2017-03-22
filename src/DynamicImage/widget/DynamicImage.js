@@ -1,9 +1,9 @@
 
 define([
     "dojo/_base/declare", "mxui/widget/_WidgetBase", "dijit/_TemplatedMixin",
-    "mxui/dom", "dojo/dom", "dojo/query", "dojo/dom-prop", "dojo/dom-geometry", "dojo/dom-class", "dojo/dom-style", "dojo/dom-construct", "dojo/_base/array", "dojo/_base/lang", "dojo/text", "dojo/html", "dojo/_base/event",
+    "mxui/dom", "dojo/dom", "dojo/query", "dojo/dom-prop", "dojo/dom-geometry", "dojo/dom-class", "dojo/dom-style", "dojo/dom-construct", "dojo/_base/array", "dojo/_base/lang", "dojo/text", "dojo/html", "dojo/_base/event", "dojo/on",
     "dojo/text!DynamicImage/widget/template/DynamicImage.html"
-], function (declare, _WidgetBase, _TemplatedMixin, dom, dojoDom, domQuery, domProp, domGeom, domClass, domStyle, domConstruct, dojoArray, lang, text, html, event, widgetTemplate) {
+], function (declare, _WidgetBase, _TemplatedMixin, dom, dojoDom, domQuery, domProp, domGeom, domClass, domStyle, domConstruct, dojoArray, lang, text, html, event, on, widgetTemplate) {
     "use strict";
 
     return declare("DynamicImage.widget.DynamicImage", [_WidgetBase, _TemplatedMixin], {
@@ -11,16 +11,8 @@ define([
         // _TemplatedMixin will create our dom node using this HTML template.
         templateString: widgetTemplate,
 
-        _handles: null,
         _contextObj: null,
-
-        constructor: function () {
-            this._handles = [];
-        },
-
-        postCreate: function () {
-            logger.debug(this.id + ".postCreate");
-        },
+        _clickHandler: null,
 
         update: function (obj, callback) {
             logger.debug(this.id + ".update");
@@ -37,7 +29,7 @@ define([
                    }),
                    error: lang.hitch(this, function (err) {
                        console.warn(this.id + ".update mx.data.get failed");
-                       mendix.lang.nullExec(callback);
+                       this._executeCallback(callback, "update mx.data.get errorCb");
                    })
                }, this);
             }
@@ -45,15 +37,10 @@ define([
 
         uninitialize: function () {
             logger.debug(this.id + ".uninitialize");
-            try {
-                if (this._handles) {
-                    this._handles.forEach(function (handle, i) {
-                        this.unsubscribe(handle);
-                    });
-                    this._handles = [];
-                }
-            } catch (e) {
-                console.warn("Unitialize of Dynamic Image Viewer failed");
+            this.unsubscribeAll();
+            if (this._clickHandler) {
+                this._clickHandler.remove();
+                this._clickHandler = null;
             }
         },
 
@@ -86,7 +73,9 @@ define([
                             }
                         }
                     }
-                    this.connect(this.imageNode, "onclick", this._execClick);
+                    if (this._clickHandler === null) {
+                        this._clickHandler = on(this.imageNode, "click", lang.hitch(this, this._execClick));
+                    }
                 } catch (err) {
                     console.warn(this.id +".setDataobject: error while loading image" + err);
                     loaded = false;
@@ -99,7 +88,7 @@ define([
                 this._setToDefaultImage();
             }
 
-            mendix.lang.nullExec(callback);
+            this._executeCallback(callback, "_updateRendering");
         },
 
         _loadImagefromUrl : function(url) {
@@ -145,14 +134,10 @@ define([
             logger.debug(this.id + "._execClick");
             if (this._contextObj !== null && this.imageNode) {
                 if (this.clickmicroflow !== "") {
-                    mx.data.action({
+                    mx.ui.action(this.clickmicroflow, {
                         params          : {
                             applyto     : "selection",
-                            actionname  : this.clickmicroflow,
                             guids       : [this._contextObj.getGuid()]
-                        },
-                        store: {
-                            caller: this.mxform
                         },
                         callback        : function(obj) {
                         },
@@ -173,29 +158,26 @@ define([
         // Reset subscriptions.
         _resetSubscriptions: function () {
             logger.debug(this.id + "._resetSubscriptions");
-            var _objectHandle = null;
-
-            // Release handles on previous object, if any.
-            if (this._handles) {
-                this._handles.forEach(function (handle, i) {
-                    mx.data.unsubscribe(handle);
-                });
-                this._handles = [];
-            }
+            this.unsubscribeAll();
 
             // When a mendix object exists create subscribtions.
             if (this._contextObj) {
-                _objectHandle = this.subscribe({
+                this.subscribe({
                     guid: this._contextObj.getGuid(),
                     callback: lang.hitch(this, function (guid) {
                         this._updateRendering();
                     })
                 });
-                this._handles = [_objectHandle];
+            }
+        },
+
+        _executeCallback: function (cb, from) {
+            logger.debug(this.id + "._executeCallback" + (from ? " from " + from : ""));
+            if (cb && typeof cb === "function") {
+                cb();
             }
         }
     });
 });
-require(["DynamicImage/widget/DynamicImage"], function () {
-    "use strict";
-});
+
+require(["DynamicImage/widget/DynamicImage"]);

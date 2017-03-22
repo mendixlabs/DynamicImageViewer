@@ -40,37 +40,32 @@ define([
                 this.imageNode.src = this.defaultImage;
             }
 
-            mendix.lang.nullExec(callback);
+            this._executeCallback(callback, "_updateRendering");
         },
 
         // Reset subscriptions.
         _resetSubscriptions: function () {
             logger.debug(this.id + "._resetSubscriptions");
-            var _objectHandle = null;
-
-            // Release handles on previous object, if any.
-            if (this._handles) {
-                this._handles.forEach(function (handle, i) {
-                    mx.data.unsubscribe(handle);
-                });
-                this._handles = [];
-            }
+            this.unsubscribeAll();
 
             // When a mendix object exists create subscribtions.
             if (this._contextObj) {
-
-                _objectHandle = this.subscribe({
+                this.subscribe({
                     guid: this._contextObj.getGuid(),
                     callback: lang.hitch(this, function (guid) {
                         this._updateRendering();
                     })
                 });
+            }
+        },
 
-                this._handles = [_objectHandle];
+        _executeCallback: function (cb, from) {
+            logger.debug(this.id + "._executeCallback" + (from ? " from " + from : ""));
+            if (cb && typeof cb === "function") {
+                cb();
             }
         }
     });
 });
-require(["DynamicImage/widget/StaticImage"], function () {
-    "use strict";
-});
+
+require(["DynamicImage/widget/StaticImage"]);

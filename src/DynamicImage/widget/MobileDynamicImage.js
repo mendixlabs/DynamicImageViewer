@@ -7,6 +7,5 @@ define([
     return declare("DynamicImage.widget.MobileDynamicImage", [DynamicImage]);
 
 });
-require(["DynamicImage/widget/MobileDynamicImage"], function () {
-    "use strict";
-});
+
+require(["DynamicImage/widget/MobileDynamicImage"]);
