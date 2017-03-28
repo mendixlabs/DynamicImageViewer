@@ -1,5 +1,5 @@
 .dynamicimage {
-    
+
 }
 
 .dynamicimage-message {
@@ -14,4 +14,8 @@
 .dynamicimage-infoTextNode {
     padding: 0.8em 1em;
     margin-top: 10px;
+}
+
+.dynamicimage-clickable {
+    cursor: pointer;
 }

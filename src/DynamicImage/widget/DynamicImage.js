@@ -101,6 +101,7 @@ define([
                 if (this.tooltipattr) {
                     this.imageNode.title = this._contextObj.get(this.tooltipattr);
                 }
+                this._setClickClass();
                 return true;
             }
             return false;
@@ -127,6 +128,7 @@ define([
             if (this.imageNode) {
                 this.imageNode.onerror = null;  //do not catch exceptions when loading default
                 this.imageNode.src = this.defaultImage;
+                this._setClickClass();
             }
         },
 
@@ -153,6 +155,10 @@ define([
                     }
                 }
             }
+        },
+
+        _setClickClass: function () {
+            domClass.toggle(this.imageNode, "dynamicimage-clickable", this.clickmicroflow !== "" || this.linkattr !== "");
         },
 
         // Reset subscriptions.
