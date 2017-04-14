@@ -117,8 +117,8 @@ define([
                 factorh = this.height / origh;
                 factor = (factorw < factorh ? factorw : factorh);
                 if (factor < 1) {//check prevents upscaling
-                    domStyle.add(this.imageNode, "width",  (factor * origw) + "px");
-                    domStyle.add(this.imageNode, "height", (factor * origh) + "px");
+                    domStyle.set(this.imageNode, "width",  (factor * origw) + "px");
+                    domStyle.set(this.imageNode, "height", (factor * origh) + "px");
                 }
             }
         },
