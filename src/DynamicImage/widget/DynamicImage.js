@@ -17,6 +17,19 @@ define([
         _contextObj: null,
         _clickHandler: null,
 
+        widthNumber: null,
+        heightNumber: null,
+
+        postMixInProperties: function () {
+            // Hack around: Mendix widget will add width and height attribute to image node
+            // <img height="50" width="50">
+            // Rename the properties in the XML will break backward compatibility. 
+            this.widthNumber = this.width;
+            delete this.width;
+            this.heightNumber = this.height;
+            delete this.height;
+        },
+
         update: function (obj, callback) {
             logger.debug(this.id + ".update");
             this._contextObj = obj;
@@ -113,21 +126,22 @@ define([
 
         _resizeImage: function() {
             logger.debug(this.id + "._resizeImage");
-            if (!this.imageNode) {
-                return;
+            // No width / height is browser default, equal to css auto
+            var width = ""; 
+            if (this.widthUnit === "pixels") {
+                width = this.widthNumber + "px";
+            } else if(this.widthUnit === "percentage") {
+                width = this.widthNumber + "%";
             }
-            var origw, origh, factorw, factorh, factor;
-            origw = this.imageNode.width;
-            origh = this.imageNode.height;
-            if (origw > 0 && origh > 0) {//only apply if an valid image has been loaded
-                factorw = this.width / origw;
-                factorh = this.height / origh;
-                factor = (factorw < factorh ? factorw : factorh);
-                if (factor < 1) {//check prevents upscaling
-                    domStyle.set(this.imageNode, "width",  (factor * origw) + "px");
-                    domStyle.set(this.imageNode, "height", (factor * origh) + "px");
-                }
+            domStyle.set(this.imageNode, "width", width);
+
+            var height= "";
+            if (this.heightUnit === "pixels") {
+                height = this.heightNumber + "px";
+            } else if(this.heightUnit === "percentage") {
+                height = this.heightNumber + "%";
             }
+            domStyle.set(this.imageNode, "height", height);
         },
 
         _setToDefaultImage : function() {

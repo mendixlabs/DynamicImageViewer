@@ -49,12 +49,32 @@
         <property key="width" type="integer" defaultValue="300">
             <caption>Width</caption>
             <category>Appearance</category>
-            <description>Maximum width of the image in pixels. </description>
+            <description>Maximum width of the image in pixels.</description>
+        </property>
+        <property key="widthUnit" type="enumeration" defaultValue="pixels">
+            <caption>Width unit</caption>
+            <category>Appearance</category>
+            <description>No inline style will be set on auto</description>
+            <enumerationValues>
+                <enumerationValue key="auto">Auto</enumerationValue>
+                <enumerationValue key="pixels">Pixels</enumerationValue>
+                <enumerationValue key="percentage">Percentage</enumerationValue>
+            </enumerationValues>
         </property>
         <property key="height" type="integer" defaultValue="300">
             <caption>Height</caption>
             <category>Appearance</category>
-            <description>Maximum height of the image in pixels. </description>
+            <description>Maximum height of the image in pixels.</description>
+        </property>
+        <property key="heightUnit" type="enumeration" defaultValue="pixels">
+            <caption>Height unit</caption>
+            <category>Appearance</category>
+            <description>No inline style will be set on auto</description>
+            <enumerationValues>
+                <enumerationValue key="auto">Auto</enumerationValue>
+                <enumerationValue key="pixels">Pixels</enumerationValue>
+                <enumerationValue key="percentage">Percentage</enumerationValue>
+            </enumerationValues>
         </property>
         <property key="alt" type="string" defaultValue="loading..."  required="false">
             <caption>Alt Caption</caption>
