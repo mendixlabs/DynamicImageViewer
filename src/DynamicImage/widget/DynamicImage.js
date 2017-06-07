@@ -30,7 +30,7 @@ define([
             var image = document.createElement("img");
             this.imageNode = image;
             this.domNode = image;
-            this.setImageSize();
+            this.setImageSize(false);
         },
 
         update: function (obj, callback) {
@@ -116,18 +116,14 @@ define([
 
             if (url !== "" && typeof url !== "undefined" && url !== null) {
                 this.imageNode.onerror = lang.hitch(this, this._setToDefaultImage);
-                // Resize force redraw in browser, not alway needed.
                 // Some cases the height was rendering 0px
-                // style (width: 200px; height: 20x) with context object url
-                this.imageNode.onload = function(){
-                    if (document.createEvent) { // W3C
-                        var event = document.createEvent("Event");
-                        event.initEvent("resize", true, true);
-                        window.dispatchEvent(event);
-                    } else { // IE
-                        document.fireEvent("onresize");
+                // With style (width: 200px; height: 20%) with context object url
+                // So, set the relative style after loading.
+                this.imageNode.onload = lang.hitch(this, function() {
+                    if (this.imageNode) {
+                        this.setImageSize(true);
                     }
-                }
+                });
                 this.imageNode.src = this.pathprefix + url + this.pathpostfix;
                 if (this.tooltipattr) {
                     this.imageNode.title = this._contextObj.get(this.tooltipattr);
@@ -138,13 +134,13 @@ define([
             return false;
         },
 
-        setImageSize: function() {
+        setImageSize: function(relative) {
             logger.debug(this.id + "._resizeImage");
             // No width / height is browser default, equal to css auto
             var width = ""; 
             if (this.widthUnit === "pixels") {
                 width = this.widthNumber + "px";
-            } else if(this.widthUnit === "percentage") {
+            } else if(this.widthUnit === "percentage" && relative) {
                 width = this.widthNumber + "%";
             }
             domStyle.set(this.imageNode, "width", width);
@@ -152,7 +148,7 @@ define([
             var height= "";
             if (this.heightUnit === "pixels") {
                 height = this.heightNumber + "px";
-            } else if(this.heightUnit === "percentage") {
+            } else if(this.heightUnit === "percentage" && relative) {
                 height = this.heightNumber + "%";
             }
             domStyle.set(this.imageNode, "height", height);
