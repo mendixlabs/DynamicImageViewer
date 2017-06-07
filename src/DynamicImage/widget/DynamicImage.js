@@ -26,7 +26,7 @@ define([
             delete this.height;
         },
 
-        buildRendering() {
+        buildRendering: function() {
             var image = document.createElement("img");
             this.imageNode = image;
             this.domNode = image;
@@ -120,7 +120,13 @@ define([
                 // Some cases the height was rendering 0px
                 // style (width: 200px; height: 20x) with context object url
                 this.imageNode.onload = function(){
-                    window.dispatchEvent(new Event("resize"));
+                    if (document.createEvent) { // W3C
+                        var event = document.createEvent("Event");
+                        event.initEvent("resize", true, true);
+                        window.dispatchEvent(event);
+                    } else { // IE
+                        document.fireEvent("onresize");
+                    }
                 }
                 this.imageNode.src = this.pathprefix + url + this.pathpostfix;
                 if (this.tooltipattr) {
