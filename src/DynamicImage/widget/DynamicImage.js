@@ -5,14 +5,9 @@ define([
     "dojo/dom-class",
     "dojo/dom-style",
     "dojo/_base/lang",
-    "dojo/on",
-    "dojo/text!DynamicImage/widget/template/DynamicImage.html"
-], function (declare, _WidgetBase, _TemplatedMixin, domClass, domStyle, lang, on, widgetTemplate) {
-    "use strict";
-
-    return declare("DynamicImage.widget.DynamicImage", [_WidgetBase, _TemplatedMixin], {
-
-        templateString: widgetTemplate,
+    "dojo/on"
+], function (declare, _WidgetBase, _TemplatedMixin, domClass, domStyle, lang, on) {
+    return declare("DynamicImage.widget.DynamicImage", [_WidgetBase], {
 
         _contextObj: null,
         _clickHandler: null,
@@ -23,11 +18,19 @@ define([
         postMixInProperties: function () {
             // Hack around: Mendix widget will add width and height attribute to image node
             // <img height="50" width="50">
-            // Rename the properties in the XML will break backward compatibility. 
+            // Rename the properties in the XML will break backward compatibility.
+            // Also html template could not be used.
             this.widthNumber = this.width;
             delete this.width;
             this.heightNumber = this.height;
             delete this.height;
+        },
+
+        buildRendering() {
+            var image = document.createElement("img");
+            this.imageNode = image;
+            this.domNode = image;
+            this.setImageSize();
         },
 
         update: function (obj, callback) {
@@ -113,7 +116,12 @@ define([
 
             if (url !== "" && typeof url !== "undefined" && url !== null) {
                 this.imageNode.onerror = lang.hitch(this, this._setToDefaultImage);
-                this.imageNode.onload = lang.hitch(this, this._resizeImage);
+                // Resize force redraw in browser, not alway needed.
+                // Some cases the height was rendering 0px
+                // style (width: 200px; height: 20x) with context object url
+                this.imageNode.onload = function(){
+                    window.dispatchEvent(new Event("resize"));
+                }
                 this.imageNode.src = this.pathprefix + url + this.pathpostfix;
                 if (this.tooltipattr) {
                     this.imageNode.title = this._contextObj.get(this.tooltipattr);
@@ -124,7 +132,7 @@ define([
             return false;
         },
 
-        _resizeImage: function() {
+        setImageSize: function() {
             logger.debug(this.id + "._resizeImage");
             // No width / height is browser default, equal to css auto
             var width = ""; 

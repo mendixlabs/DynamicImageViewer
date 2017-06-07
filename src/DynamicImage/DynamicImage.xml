@@ -54,7 +54,7 @@
         <property key="widthUnit" type="enumeration" defaultValue="pixels">
             <caption>Width unit</caption>
             <category>Appearance</category>
-            <description>No inline style will be set on auto</description>
+            <description>No inline style will be set on auto. Percentage relative to parent container</description>
             <enumerationValues>
                 <enumerationValue key="auto">Auto</enumerationValue>
                 <enumerationValue key="pixels">Pixels</enumerationValue>
@@ -69,7 +69,7 @@
         <property key="heightUnit" type="enumeration" defaultValue="pixels">
             <caption>Height unit</caption>
             <category>Appearance</category>
-            <description>No inline style will be set on auto</description>
+            <description>No inline style will be set on auto. Percentage is relative to parent container only when parent has an absolute height.</description>
             <enumerationValues>
                 <enumerationValue key="auto">Auto</enumerationValue>
                 <enumerationValue key="pixels">Pixels</enumerationValue>
