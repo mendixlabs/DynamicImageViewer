@@ -1,14 +1,17 @@
-
 define([
-    "dojo/_base/declare", "mxui/widget/_WidgetBase", "dijit/_TemplatedMixin",
-    "mxui/dom", "dojo/dom", "dojo/query", "dojo/dom-prop", "dojo/dom-geometry", "dojo/dom-class", "dojo/dom-style", "dojo/dom-construct", "dojo/_base/array", "dojo/_base/lang", "dojo/text", "dojo/html", "dojo/_base/event", "dojo/on",
+    "dojo/_base/declare",
+    "mxui/widget/_WidgetBase",
+    "dijit/_TemplatedMixin",
+    "dojo/dom-class",
+    "dojo/dom-style",
+    "dojo/_base/lang",
+    "dojo/on",
     "dojo/text!DynamicImage/widget/template/DynamicImage.html"
-], function (declare, _WidgetBase, _TemplatedMixin, dom, dojoDom, domQuery, domProp, domGeom, domClass, domStyle, domConstruct, dojoArray, lang, text, html, event, on, widgetTemplate) {
+], function (declare, _WidgetBase, _TemplatedMixin, domClass, domStyle, lang, on, widgetTemplate) {
     "use strict";
 
     return declare("DynamicImage.widget.DynamicImage", [_WidgetBase, _TemplatedMixin], {
 
-        // _TemplatedMixin will create our dom node using this HTML template.
         templateString: widgetTemplate,
 
         _contextObj: null,
@@ -44,7 +47,6 @@ define([
             }
         },
 
-        // Rerender the interface.
         _updateRendering: function (callback) {
             logger.debug(this.id + "._updateRendering");
 
@@ -64,9 +66,9 @@ define([
                                 mx.data.get({ //fetch the object first
                                     guid : targetObj,
                                     nocache : true,
-                                    callback : function(obj) {
+                                    callback : lang.hitch(this, function(obj) {
                                         this._loadImagefromUrl(obj.get(this.imageattr.split("/")[2]));
-                                    }
+                                    })
                                 }, this);
                             } else if (targetObj !== null) {
                                 loaded = this._loadImagefromUrl(targetObj.attributes[ this.imageattr.split("/")[2]].value);
@@ -109,6 +111,9 @@ define([
 
         _resizeImage: function() {
             logger.debug(this.id + "._resizeImage");
+            if (!this.imageNode) {
+                return;
+            }
             var origw, origh, factorw, factorh, factor;
             origw = this.imageNode.width;
             origh = this.imageNode.height;
@@ -141,12 +146,10 @@ define([
                             applyto     : "selection",
                             guids       : [this._contextObj.getGuid()]
                         },
-                        callback        : function(obj) {
-                        },
                         error           : function(error) {
                             console.error(this.id + "error: XAS error executing microflow");
                         }
-                    });
+                    }, this);
                 }
                 if (this.linkattr !== "") {
                     var url = this._contextObj.get(this.linkattr);
@@ -161,12 +164,10 @@ define([
             domClass.toggle(this.imageNode, "dynamicimage-clickable", this.clickmicroflow !== "" || this.linkattr !== "");
         },
 
-        // Reset subscriptions.
         _resetSubscriptions: function () {
             logger.debug(this.id + "._resetSubscriptions");
             this.unsubscribeAll();
 
-            // When a mendix object exists create subscribtions.
             if (this._contextObj) {
                 this.subscribe({
                     guid: this._contextObj.getGuid(),

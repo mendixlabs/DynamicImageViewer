@@ -2,6 +2,8 @@
 
 ---
 
+**Note: Per version 5.0 we remove the Mobile Dynamic Imageviewer and Mobile Static Imageviewer, as there is no difference with the normal ones. This is breaking, do not update if you use those two**
+
 ## Description
 
 The image viewer package provides the possibility to display images using URLs. Those URLs can be constructed dynamically, or be be predefined in the modeler. To 'just' display an image, without having a System.Image object, this package is just what you are looking for. Last but not least the viewer supports cross-browser proportional scaling.
@@ -12,10 +14,10 @@ The image viewer package provides the possibility to display images using URLs. 
 - Display images not from Mendix in your application
 - Display images in a pagewith a predefined, fixed URL.
 - Display images based on a calculated URL.
-- Just display an image in your application, based on a modeler image or a predefined URL. 
+- Just display an image in your application, based on a modeler image or a predefined URL.
 
 ## Features and limitations
- 
+
 - Display images based on a URL, either predefined or extracted from your domain model
 - The image viewer can display images derived from System.Image as well
 
@@ -65,5 +67,4 @@ If set, this path will be prefixed before the image URL.
 
 #### Path postfix
 
-If set, this path will be append after the image URL. 
-
+If set, this path will be append after the image URL.
