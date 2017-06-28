@@ -1,5 +1,4 @@
-# Image Viewer
-
+Image Viewer
 ---
 
 **Note: Per version 5.0 we remove the Mobile Dynamic Imageviewer and Mobile Static Imageviewer, as there is no difference with the normal ones. This is breaking, do not update if you use those two**
