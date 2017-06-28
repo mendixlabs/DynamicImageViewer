@@ -24,17 +24,22 @@ define([
                 this._resetSubscriptions();
                 this._updateRendering(callback);
             } else {
-                mx.data.get({
-                   guid    : this.mxcontext.getTrackId(),
-                   callback : lang.hitch(this, function(obj) {
-                       this._contextObj = obj;
-                       this._updateRendering(callback);
-                   }),
-                   error: lang.hitch(this, function (err) {
-                       console.warn(this.id + ".update mx.data.get failed");
-                       this._executeCallback(callback, "update mx.data.get errorCb");
-                   })
-               }, this);
+                if (this.mxcontext && this.mxcontext.getTrackId()) {
+                    mx.data.get({
+                       guid    : this.mxcontext.getTrackId(),
+                       callback : lang.hitch(this, function(obj) {
+                           this._contextObj = obj;
+                           this._updateRendering(callback);
+                       }),
+                       error: lang.hitch(this, function (err) {
+                           console.warn(this.id + ".update mx.data.get failed");
+                           this._executeCallback(callback, "update mx.data.get errorCb");
+                       })
+                   }, this);
+               } else {
+                   logger.warn(this.id + ".update: no context object && no trackId");
+                   this._executeCallback(callback, "update no context");
+               }
             }
         },
 
