@@ -3,7 +3,7 @@ define([
     "mxui/widget/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dojo/_base/lang",
-    "dojo/text!DynamicImage/widget/template/DynamicImage.html"
+    "dojo/text!DynamicImage/widget/template/StaticImage.html"
 ], function (declare, _WidgetBase, _TemplatedMixin, lang, widgetTemplate) {
     "use strict";
 

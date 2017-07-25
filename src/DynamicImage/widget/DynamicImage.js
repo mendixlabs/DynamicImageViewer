@@ -5,17 +5,33 @@ define([
     "dojo/dom-class",
     "dojo/dom-style",
     "dojo/_base/lang",
-    "dojo/on",
-    "dojo/text!DynamicImage/widget/template/DynamicImage.html"
-], function (declare, _WidgetBase, _TemplatedMixin, domClass, domStyle, lang, on, widgetTemplate) {
-    "use strict";
-
-    return declare("DynamicImage.widget.DynamicImage", [_WidgetBase, _TemplatedMixin], {
-
-        templateString: widgetTemplate,
+    "dojo/on"
+], function (declare, _WidgetBase, _TemplatedMixin, domClass, domStyle, lang, on) {
+    return declare("DynamicImage.widget.DynamicImage", [_WidgetBase], {
 
         _contextObj: null,
         _clickHandler: null,
+
+        widthNumber: null,
+        heightNumber: null,
+
+        postMixInProperties: function () {
+            // Hack around: Mendix widget will add width and height attribute to image node
+            // <img height="50" width="50">
+            // Rename the properties in the XML will break backward compatibility.
+            // Also html template could not be used.
+            this.widthNumber = this.width;
+            delete this.width;
+            this.heightNumber = this.height;
+            delete this.height;
+        },
+
+        buildRendering: function() {
+            var image = document.createElement("img");
+            this.imageNode = image;
+            this.domNode = image;
+            this.setImageSize(false);
+        },
 
         update: function (obj, callback) {
             logger.debug(this.id + ".update");
@@ -23,23 +39,20 @@ define([
             if (obj !== null) {
                 this._resetSubscriptions();
                 this._updateRendering(callback);
+            } else if (this.mxcontext && this.mxcontext.getTrackId()){
+                mx.data.get({
+                   guid    : this.mxcontext.getTrackId(),
+                   callback : lang.hitch(this, function(obj) {
+                       this._contextObj = obj;
+                       this._updateRendering(callback);
+                   }),
+                   error: lang.hitch(this, function (err) {
+                       console.warn(this.id + ".update mx.data.get failed");
+                       this._executeCallback(callback, "update mx.data.get errorCb");
+                   })
+               }, this);
             } else {
-                if (this.mxcontext && this.mxcontext.getTrackId()) {
-                    mx.data.get({
-                       guid    : this.mxcontext.getTrackId(),
-                       callback : lang.hitch(this, function(obj) {
-                           this._contextObj = obj;
-                           this._updateRendering(callback);
-                       }),
-                       error: lang.hitch(this, function (err) {
-                           console.warn(this.id + ".update mx.data.get failed");
-                           this._executeCallback(callback, "update mx.data.get errorCb");
-                       })
-                   }, this);
-               } else {
-                   logger.warn(this.id + ".update: no context object && no trackId");
-                   this._executeCallback(callback, "update no context");
-               }
+                this._updateRendering(callback);
             }
         },
 
@@ -103,7 +116,14 @@ define([
 
             if (url !== "" && typeof url !== "undefined" && url !== null) {
                 this.imageNode.onerror = lang.hitch(this, this._setToDefaultImage);
-                this.imageNode.onload = lang.hitch(this, this._resizeImage);
+                // Some cases the height was rendering 0px
+                // With style (width: 200px; height: 20%) with context object url
+                // So, set the relative style after loading.
+                this.imageNode.onload = lang.hitch(this, function() {
+                    if (this.imageNode) {
+                        this.setImageSize(true);
+                    }
+                });
                 this.imageNode.src = this.pathprefix + url + this.pathpostfix;
                 if (this.tooltipattr) {
                     this.imageNode.title = this._contextObj.get(this.tooltipattr);
@@ -114,23 +134,24 @@ define([
             return false;
         },
 
-        _resizeImage: function() {
+        setImageSize: function(relative) {
             logger.debug(this.id + "._resizeImage");
-            if (!this.imageNode) {
-                return;
+            // No width / height is browser default, equal to css auto
+            var width = ""; 
+            if (this.widthUnit === "pixels") {
+                width = this.widthNumber + "px";
+            } else if(this.widthUnit === "percentage" && relative) {
+                width = this.widthNumber + "%";
             }
-            var origw, origh, factorw, factorh, factor;
-            origw = this.imageNode.width;
-            origh = this.imageNode.height;
-            if (origw > 0 && origh > 0) {//only apply if an valid image has been loaded
-                factorw = this.width / origw;
-                factorh = this.height / origh;
-                factor = (factorw < factorh ? factorw : factorh);
-                if (factor < 1) {//check prevents upscaling
-                    domStyle.set(this.imageNode, "width",  (factor * origw) + "px");
-                    domStyle.set(this.imageNode, "height", (factor * origh) + "px");
-                }
+            domStyle.set(this.imageNode, "width", width);
+
+            var height= "";
+            if (this.heightUnit === "pixels") {
+                height = this.heightNumber + "px";
+            } else if(this.heightUnit === "percentage" && relative) {
+                height = this.heightNumber + "%";
             }
+            domStyle.set(this.imageNode, "height", height);
         },
 
         _setToDefaultImage : function() {
