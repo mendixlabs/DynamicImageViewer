@@ -19,13 +19,16 @@ var gulp = require("gulp"),
     intercept = require("gulp-intercept"),
     argv = require("yargs").argv,
     widgetBuilderHelper = require("widgetbuilder-gulp-helper"),
-    jsValidate = require("gulp-jsvalidate");
+    jsValidate = require("gulp-jsvalidate"),
+    minify = require('gulp-minify'),
+    gulpCopy = require('gulp-copy'),
+    fs = require("fs-extra");
 
 var pkg = require("./package.json"),
     paths = widgetBuilderHelper.generatePaths(pkg),
     xmlversion = widgetBuilderHelper.xmlversion;
 
-gulp.task("default", function() {
+gulp.task("default", function () {
     gulp.watch("./src/**/*", ["compress"]);
     gulp.watch("./src/**/*.js", ["copy:js"]);
 });
@@ -34,7 +37,9 @@ gulp.task("clean", function () {
     return del([
         paths.WIDGET_TEST_DEST,
         paths.WIDGET_DIST_DEST
-    ], { force: true });
+    ], {
+        force: true
+    });
 });
 
 gulp.task("compress", ["clean"], function () {
@@ -59,7 +64,7 @@ gulp.task("version:xml", function () {
 
 gulp.task("version:json", function () {
     return gulp.src("./package.json")
-        .pipe(gulpif(typeof argv.n !== "undefined", jsonTransform(function(data) {
+        .pipe(gulpif(typeof argv.n !== "undefined", jsonTransform(function (data) {
             data.version = argv.n;
             return data;
         }, 2)))
@@ -77,12 +82,33 @@ gulp.task("icon", function (cb) {
 });
 
 gulp.task("folders", function () {
-    paths.showPaths(); return;
+    paths.showPaths();
+    return;
 });
 
 gulp.task("modeler", function (cb) {
     widgetBuilderHelper.runmodeler(MODELER_PATH, MODELER_ARGS, paths.TEST_PATH, cb);
 });
 
-gulp.task("build", ["compress"]);
-gulp.task("version", ["version:xml", "version:json"]);
+
+gulp.task("build:prod", function () {
+    try {
+        fs.copySync('src', 'build'); // copy everthing
+        gulp.src(['src/**/*.js']) // overwrite .js files with the minified ones.
+            .pipe(minify({
+                ext: {
+                    min: ".js"
+                },
+                noSource: true,
+                mangle: true
+            }))
+            .pipe(gulp.dest('build'));
+        return gulp.src("build/**/*")
+            .pipe(zip(pkg.name + ".mpk"))
+            .pipe(gulp.dest(paths.TEST_WIDGETS_FOLDER))
+            .pipe(gulp.dest("build"))
+            .pipe(gulp.dest("dist"));
+    } catch (e) {
+        console.error(e);
+    }
+});
