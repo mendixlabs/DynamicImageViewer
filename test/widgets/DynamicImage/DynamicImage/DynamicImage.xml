@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<widget id="DynamicImage.widget.DynamicImage" needsEntityContext="true" xmlns="http://www.mendix.com/widget/1.0/">
+    <name>Dynamic Image Viewer</name>
+    <description>Displays an image using a dynamic or static URL</description>
+
+    <icon>iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2Fy
+        ZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAfZJREFUeNqMUs9rE0EU/mZ2sttfFloJ
+        8SJ40ouItwiChx77H7TQHOwpPVW8JkL+gnhqbsEkUIjg3Z68eLM9lbb0UkXclmor
+        bWOT7O7sjG8mzQqrNX3MxwzvvfnmzXsfazQaawCKGG21QqGw8pe3Xq/rMAxHwuSR
+        IQ0hpbRE8fd3iH7u48fHdXS/dSE7lBAPHnn4+jOGeWnjJmCYvNw8Ju+vYOLuA6hY
+        QikFTZBmp/h1BCKKIpvAxDSBGL0JqEiCKwdfTyWOLzUeUdzkXUtgTHU+4fLUh7+9
+        h4vz2OLgRMHvKBv/L4GpYPftK5wd+/ii8lDPXtrg7BXa7Tay2SyazaZOT0ZQhy3B
+        h9Z79Ombt5+vYmlhATexVqtVTCrYOXLRI4KnV81a3jgHGINHGHMIgsE1ZyHgcY4X
+        eWEbmxCc9F2EmmFYES2aAkMEDqYMF7dN1nTuqYEGTG4yxjc7R1jfPUwIph2NqYzG
+        ZEbBc2I49DqnyjLkd7lKCEQcx7VyuZxIOZfL2eC9W4ouc4yPuZgSHC59ISJljRsf
+        d/4QVKtVo+9E45VKRRsRed0zMIejF7j4RbVTG2BGQC44tD+5M4MgCCDSnR1+YW3T
+        x0UQoR9IhKRMK2vOoOmGl2FYfDw3qCBNMBTM1mp+5BhN7r8IaqVSqYibWe23AAMA
+        WwlWhAsSTwAAAAAASUVORK5CYII=</icon>
+
+    <properties>
+        <property key="defaultImage" type="string" defaultValue="widgets/DynamicImage/widget/ui/images/loader.gif" required="false">
+            <caption>Image URL</caption>
+            <category>Data source</category>
+            <description>
+                This image will be shown if the image cannot be found, is loading or if the image attribute is not defined.
+                For example: 'http://mydomain.com/images/img=loading.png&amp;thumb=true'.
+            </description>
+        </property>
+        <property key="imageattr" type="attribute" required="false" isPath="optional" pathType="reference">
+            <caption>Image attribute</caption>
+            <category>Data source</category>
+            <description>If set, this fields provides the image URL of an image. This property overrides the Image URL property.
+                The final URL (src) of the image then becomes &lt;Path prefix&gt;&lt;Image attribute value&gt;&lt;Path postfix;&gt;
+            </description>
+            <attributeTypes>
+                <attributeType name="String"/>
+            </attributeTypes>
+        </property>
+        <property key="pathprefix" type="string" defaultValue=""  required="false">
+            <caption>Path prefix</caption>
+            <category>Data source</category>
+            <description>If set, this path will be prefixed before the image URL. For example 'http://mydomain.com/images/img='</description>
+        </property>
+        <property key="pathpostfix" type="string" defaultValue=""  required="false">
+            <caption>Path postfix</caption>
+            <category>Data source</category>
+            <description>If set, this path will be append after the image URL. For example '.png&amp;thumb=true'</description>
+        </property>
+        <property key="width" type="integer" defaultValue="300">
+            <caption>Width</caption>
+            <category>Appearance</category>
+            <description>Maximum width of the image in pixels. </description>
+        </property>
+        <property key="height" type="integer" defaultValue="300">
+            <caption>Height</caption>
+            <category>Appearance</category>
+            <description>Maximum height of the image in pixels. </description>
+        </property>
+        <property key="alt" type="string" defaultValue="loading..."  required="false">
+            <caption>Alt Caption</caption>
+            <category>Appearance</category>
+            <description>Alternative caption which will be shown when the image cannot be loaded.</description>
+        </property>
+        <property key="clickmicroflow" type="microflow" required="false">
+            <caption>Click Action</caption>
+            <category>Behavior</category>
+            <description>This microflow will be invoked when the image is clicked. The return value is ignored.</description>
+            <returnType type="Boolean"/>
+        </property>
+        <property key="linkattr" type="attribute" required="false">
+            <caption>Link attribute</caption>
+            <category>Behavior</category>
+            <description>This fields provides the URL of the website which should be opened when the image is clicked. For example: 'http://mydomain.com/home'</description>
+            <attributeTypes>
+                <attributeType name="String"/>
+            </attributeTypes>
+        </property>
+        <property key="linktarget" type="enumeration" defaultValue="_blank">
+            <caption>Link target</caption>
+            <category>Behavior</category>
+            <description>Defines where the link (see Link attribute) should be opened.</description>
+            <enumerationValues>
+                <enumerationValue key="_blank">Open in new page or tab</enumerationValue>
+                <enumerationValue key="_top">Replace the current page</enumerationValue>
+            </enumerationValues>
+        </property>
+        <property key="tooltipattr" type="attribute" required="false">
+            <caption>Tooltip attribute</caption>
+            <category>Behavior</category>
+            <description>This attribute will be used as the tooltip hover text for the image.</description>
+            <attributeTypes>
+                <attributeType name="String"/>
+            </attributeTypes>
+        </property>
+    </properties>
+</widget>

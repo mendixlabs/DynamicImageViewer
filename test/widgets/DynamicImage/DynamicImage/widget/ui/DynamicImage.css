@@ -1,0 +1,21 @@
+.dynamicimage {
+
+}
+
+.dynamicimage-message {
+
+}
+
+.dynamicimage .input-group-addon {
+    clear: both;
+    padding: 2px 6px;
+}
+
+.dynamicimage-infoTextNode {
+    padding: 0.8em 1em;
+    margin-top: 10px;
+}
+
+.dynamicimage-clickable {
+    cursor: pointer;
+}
