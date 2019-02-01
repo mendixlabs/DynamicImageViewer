@@ -12,6 +12,7 @@ test/.project
 .idea/
 
 dist/
+build/
 
 node_modules/
 .editorconfig
