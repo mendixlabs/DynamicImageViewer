@@ -21,7 +21,6 @@ var gulp = require("gulp"),
     widgetBuilderHelper = require("widgetbuilder-gulp-helper"),
     jsValidate = require("gulp-jsvalidate"),
     minify = require('gulp-minify'),
-    gulpCopy = require('gulp-copy'),
     fs = require("fs-extra");
 
 var pkg = require("./package.json"),
