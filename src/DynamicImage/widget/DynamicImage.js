@@ -1,22 +1,25 @@
 define([
     "dojo/_base/declare",
     "mxui/widget/_WidgetBase",
-    "dijit/_TemplatedMixin",
     "dojo/dom-class",
     "dojo/dom-style",
     "dojo/_base/lang",
     "dojo/on",
-    "dojo/text!DynamicImage/widget/template/DynamicImage.html"
-], function (declare, _WidgetBase, _TemplatedMixin, domClass, domStyle, lang, on, widgetTemplate) {
+    "dojo/dom-construct",
+    "DynamicImage/widget/ImageNode"
+], function (declare, _WidgetBase, domClass, domStyle, lang, on, domConstruct, CreateImageNode) {
     "use strict";
 
-    return declare("DynamicImage.widget.DynamicImage", [_WidgetBase, _TemplatedMixin], {
-
-        templateString: widgetTemplate,
+    return declare("DynamicImage.widget.DynamicImage", [_WidgetBase], {
 
         _contextObj: null,
         _clickHandler: null,
-
+        _imageNode: null,
+        postCreate: function () {
+            logger.debug(this.id + ".postCreate");
+            this._imageNode = CreateImageNode(this.defaultImage, this.alt);
+            domConstruct.place(this._imageNode, this.domNode);
+        },
         update: function (obj, callback) {
             logger.debug(this.id + ".update");
             this._contextObj = obj;
@@ -26,20 +29,20 @@ define([
             } else {
                 if (this.mxcontext && this.mxcontext.getTrackId()) {
                     mx.data.get({
-                       guid    : this.mxcontext.getTrackId(),
-                       callback : lang.hitch(this, function(obj) {
-                           this._contextObj = obj;
-                           this._updateRendering(callback);
-                       }),
-                       error: lang.hitch(this, function (err) {
-                           console.warn(this.id + ".update mx.data.get failed");
-                           this._executeCallback(callback, "update mx.data.get errorCb");
-                       })
-                   }, this);
-               } else {
-                   logger.warn(this.id + ".update: no context object && no trackId");
-                   this._executeCallback(callback, "update no context");
-               }
+                        guid: this.mxcontext.getTrackId(),
+                        callback: lang.hitch(this, function (obj) {
+                            this._contextObj = obj;
+                            this._updateRendering(callback);
+                        }),
+                        error: lang.hitch(this, function (err) {
+                            console.warn(this.id + ".update mx.data.get failed");
+                            this._executeCallback(callback, "update mx.data.get errorCb");
+                        })
+                    }, this);
+                } else {
+                    logger.warn(this.id + ".update: no context object && no trackId");
+                    this._executeCallback(callback, "update no context");
+                }
             }
         },
 
@@ -69,22 +72,22 @@ define([
                                 loaded = true;
                                 this._setToDefaultImage();
                                 mx.data.get({ //fetch the object first
-                                    guid : targetObj,
-                                    nocache : true,
-                                    callback : lang.hitch(this, function(obj) {
+                                    guid: targetObj,
+                                    nocache: true,
+                                    callback: lang.hitch(this, function (obj) {
                                         this._loadImagefromUrl(obj.get(this.imageattr.split("/")[2]));
                                     })
                                 }, this);
                             } else if (targetObj !== null) {
-                                loaded = this._loadImagefromUrl(targetObj.attributes[ this.imageattr.split("/")[2]].value);
+                                loaded = this._loadImagefromUrl(targetObj.attributes[this.imageattr.split("/")[2]].value);
                             }
                         }
                     }
                     if (this._clickHandler === null) {
-                        this._clickHandler = on(this.imageNode, "click", lang.hitch(this, this._execClick));
+                        this._clickHandler = on(this._imageNode, "click", lang.hitch(this, this._execClick));
                     }
                 } catch (err) {
-                    console.warn(this.id +".setDataobject: error while loading image" + err);
+                    console.warn(this.id + ".setDataobject: error while loading image" + err);
                     loaded = false;
                 }
             } else {
@@ -98,15 +101,15 @@ define([
             this._executeCallback(callback, "_updateRendering");
         },
 
-        _loadImagefromUrl : function(url) {
+        _loadImagefromUrl: function (url) {
             logger.debug(this.id + "._loadImagefromUrl");
 
             if (url !== "" && typeof url !== "undefined" && url !== null) {
-                this.imageNode.onerror = lang.hitch(this, this._setToDefaultImage);
-                this.imageNode.onload = lang.hitch(this, this._resizeImage);
-                this.imageNode.src = this.pathprefix + url + this.pathpostfix;
+                this._imageNode.onerror = lang.hitch(this, this._setToDefaultImage);
+                this._imageNode.onload = lang.hitch(this, this._resizeImage);
+                this._imageNode.src = this.pathprefix + url + this.pathpostfix;
                 if (this.tooltipattr) {
-                    this.imageNode.title = this._contextObj.get(this.tooltipattr);
+                    this._imageNode.title = this._contextObj.get(this.tooltipattr);
                 }
                 this._setClickClass();
                 return true;
@@ -114,44 +117,44 @@ define([
             return false;
         },
 
-        _resizeImage: function() {
+        _resizeImage: function () {
             logger.debug(this.id + "._resizeImage");
-            if (!this.imageNode) {
+            if (!this._imageNode) {
                 return;
             }
             var origw, origh, factorw, factorh, factor;
-            origw = this.imageNode.width;
-            origh = this.imageNode.height;
-            if (origw > 0 && origh > 0) {//only apply if an valid image has been loaded
+            origw = this._imageNode.width;
+            origh = this._imageNode.height;
+            if (origw > 0 && origh > 0) { //only apply if an valid image has been loaded
                 factorw = this.width / origw;
                 factorh = this.height / origh;
                 factor = (factorw < factorh ? factorw : factorh);
-                if (factor < 1) {//check prevents upscaling
-                    domStyle.set(this.imageNode, "width",  (factor * origw) + "px");
-                    domStyle.set(this.imageNode, "height", (factor * origh) + "px");
+                if (factor < 1) { //check prevents upscaling
+                    domStyle.set(this._imageNode, "width", (factor * origw) + "px");
+                    domStyle.set(this._imageNode, "height", (factor * origh) + "px");
                 }
             }
         },
 
-        _setToDefaultImage : function() {
+        _setToDefaultImage: function () {
             logger.debug(this.id + "._setToDefaultImage");
-            if (this.imageNode) {
-                this.imageNode.onerror = null;  //do not catch exceptions when loading default
-                this.imageNode.src = this.defaultImage;
+            if (this._imageNode) {
+                this._imageNode.onerror = null; //do not catch exceptions when loading default
+                this._imageNode.src = this.defaultImage;
                 this._setClickClass();
             }
         },
 
-        _execClick : function(index) {
+        _execClick: function (index) {
             logger.debug(this.id + "._execClick");
-            if (this._contextObj !== null && this.imageNode) {
+            if (this._contextObj !== null && this._imageNode) {
                 if (this.clickmicroflow !== "") {
                     mx.ui.action(this.clickmicroflow, {
-                        params          : {
-                            applyto     : "selection",
-                            guids       : [this._contextObj.getGuid()]
+                        params: {
+                            applyto: "selection",
+                            guids: [this._contextObj.getGuid()]
                         },
-                        error           : function(error) {
+                        error: function (error) {
                             console.error(this.id + "error: XAS error executing microflow");
                         }
                     }, this);
@@ -166,7 +169,7 @@ define([
         },
 
         _setClickClass: function () {
-            domClass.toggle(this.imageNode, "dynamicimage-clickable", this.clickmicroflow !== "" || this.linkattr !== "");
+            domClass.toggle(this._imageNode, "dynamicimage-clickable", this.clickmicroflow !== "" || this.linkattr !== "");
         },
 
         _resetSubscriptions: function () {

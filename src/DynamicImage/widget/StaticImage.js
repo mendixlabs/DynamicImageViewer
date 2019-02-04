@@ -1,18 +1,21 @@
 define([
     "dojo/_base/declare",
     "mxui/widget/_WidgetBase",
-    "dijit/_TemplatedMixin",
     "dojo/_base/lang",
-    "dojo/text!DynamicImage/widget/template/DynamicImage.html"
-], function (declare, _WidgetBase, _TemplatedMixin, lang, widgetTemplate) {
+    "dojo/dom-construct",
+    "DynamicImage/widget/ImageNode"
+], function (declare, _WidgetBase, lang, domConstruct, CreateImageNode) {
     "use strict";
 
-    return declare("DynamicImage.widget.StaticImage", [_WidgetBase, _TemplatedMixin], {
-
-        templateString: widgetTemplate,
+    return declare("DynamicImage.widget.StaticImage", [_WidgetBase], {
 
         _contextObj: null,
-
+        _imageNode: null,
+        postCreate: function () {
+            logger.debug(this.id + ".postCreate");
+            this._imageNode = CreateImageNode(this.defaultImage, this.alt);
+            domConstruct.place(this._imageNode, this.domNode);
+        },
         update: function (obj, callback) {
             logger.debug(this.id + ".update");
 
@@ -25,9 +28,9 @@ define([
             logger.debug(this.id + "._updateRendering");
 
             if (this.imageurl !== "") {
-                this.imageNode.src = this.imageurl;
+                this._imageNode.src = this.imageurl;
             } else {
-                this.imageNode.src = this.defaultImage;
+                this._imageNode.src = this.defaultImage;
             }
 
             this._executeCallback(callback, "_updateRendering");
