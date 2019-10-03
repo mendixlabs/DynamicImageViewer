@@ -30,7 +30,6 @@ define([
             logger.debug(this.id + "._updateRendering");
 
             if (this.imageurl !== "") {
-                this._imageNode.src = this.imageurl;
                 if (this.imageurl.indexOf('://') > 0 || this.imageurl.indexOf('//') === 0) { // check if url is absolute
                     this._imageNode.src = this.imageurl;
                 } else {
