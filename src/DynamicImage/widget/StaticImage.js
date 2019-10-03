@@ -30,17 +30,25 @@ define([
             logger.debug(this.id + "._updateRendering");
 
             if (this.imageurl !== "") {
-                if (this.imageurl.indexOf('://') > 0 || this.imageurl.indexOf('//') === 0) { // check if url is absolute
-                    this._imageNode.src = this.imageurl;
-                } else {
-                    this._imageNode.src = window.location.origin + "/" + this.imageurl;
-                }
+                var isAbsolutePath = 
+                    this.imageurl.indexOf('://') > 0 ||
+                    this.imageurl.indexOf('//') === 0 ||
+                    this.imageurl.indexOf('/') === 0;
+                
+                this._imageNode.src = isAbsolutePath
+                    ? this.imageurl
+                    : window.location.origin + "/" + this.imageurl;
+
             } else {
-                if (this.defaultImage.indexOf('://') > 0 || this.defaultImage.indexOf('//') === 0) { // check if url is absolute
-                    this._imageNode.src = this.defaultImage;
-                } else {
-                    this._imageNode.src = window.location.origin + "/" + this.defaultImage;
-                }
+                var isAbsolutePath = 
+                    this.defaultImage.indexOf('://') > 0 ||
+                    this.defaultImage.indexOf('//') === 0 ||
+                    this.defaultImage.indexOf('/') === 0;
+
+                this._imageNode.src = isAbsolutePath
+                    ? this.defaultImage
+                    : window.location.origin + "/" + this.defaultImage;
+                
             }
 
             this._executeCallback(callback, "_updateRendering");
