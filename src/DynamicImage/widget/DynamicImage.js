@@ -143,11 +143,14 @@ define([
             logger.debug(this.id + "._setToDefaultImage");
             if (this._imageNode) {
                 this._imageNode.onerror = null; //do not catch exceptions when loading default
-                if (this.defaultImage.indexOf('://') > 0 || this.defaultImage.indexOf('//') === 0) { // check if url is absolute
-                    this._imageNode.src = this.defaultImage;
-                } else {
-                    this._imageNode.src = window.location.origin + "/" + this.defaultImage;
-                }
+                var isAbsolutePath = 
+                    this.defaultImage.indexOf('://') > 0 ||
+                    this.defaultImage.indexOf('/') === 0;
+
+                this._imageNode.src = isAbsolutePath
+                    ? this.defaultImage
+                    : window.location.origin + "/" + this.defaultImage;
+                
                 this._setClickClass();
             }
         },
