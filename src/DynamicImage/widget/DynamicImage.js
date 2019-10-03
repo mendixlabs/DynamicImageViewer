@@ -145,7 +145,6 @@ define([
                 this._imageNode.onerror = null; //do not catch exceptions when loading default
                 var isAbsolutePath = 
                     this.defaultImage.indexOf('://') > 0 ||
-                    this.defaultImage.indexOf('//') === 0 ||
                     this.defaultImage.indexOf('/') === 0;
 
                 this._imageNode.src = isAbsolutePath

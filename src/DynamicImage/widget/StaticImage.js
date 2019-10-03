@@ -32,7 +32,6 @@ define([
             if (this.imageurl !== "") {
                 var isAbsolutePath = 
                     this.imageurl.indexOf('://') > 0 ||
-                    this.imageurl.indexOf('//') === 0 ||
                     this.imageurl.indexOf('/') === 0;
                 
                 this._imageNode.src = isAbsolutePath
@@ -42,7 +41,6 @@ define([
             } else {
                 var isAbsolutePath = 
                     this.defaultImage.indexOf('://') > 0 ||
-                    this.defaultImage.indexOf('//') === 0 ||
                     this.defaultImage.indexOf('/') === 0;
 
                 this._imageNode.src = isAbsolutePath
