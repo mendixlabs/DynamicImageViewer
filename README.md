@@ -1,5 +1,7 @@
+[![Support](https://img.shields.io/badge/Mendix%20Support%3A-Community-green.svg)](https://docs.mendix.com/appstore/general/app-store-content-support#community-category)
+
 Image Viewer
----
+===
 
 **Note: Per version 5.0 we remove the Mobile Dynamic Imageviewer and Mobile Static Imageviewer, as there is no difference with the normal ones. This is breaking, do not update if you use those two**
 
