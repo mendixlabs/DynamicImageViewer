@@ -19,12 +19,12 @@ define([
         templateString: widgetTemplate,
 
         postCreate: function () {
-            logger.debug(this.id + ".postCreate");
+            mx.logger.debug(this.id + ".postCreate");
             domAttr.set(this._imageNode,"src",this.defaultImage || "");
             domAttr.set(this._imageNode,"alt",this.alt || "");
         },
         update: function (obj, callback) {
-            logger.debug(this.id + ".update");
+            mx.logger.debug(this.id + ".update");
             this._contextObj = obj;
             if (obj !== null) {
                 this._resetSubscriptions();
@@ -43,14 +43,14 @@ define([
                         })
                     }, this);
                 } else {
-                    logger.warn(this.id + ".update: no context object && no trackId");
+                    mx.logger.warn(this.id + ".update: no context object && no trackId");
                     this._executeCallback(callback, "update no context");
                 }
             }
         },
 
         uninitialize: function () {
-            logger.debug(this.id + ".uninitialize");
+            mx.logger.debug(this.id + ".uninitialize");
             this.unsubscribeAll();
             if (this._clickHandler) {
                 this._clickHandler.remove();
@@ -59,7 +59,7 @@ define([
         },
 
         _updateRendering: function (callback) {
-            logger.debug(this.id + "._updateRendering");
+            mx.logger.debug(this.id + "._updateRendering");
 
             var targetObj,
                 loaded = false;
@@ -105,7 +105,7 @@ define([
         },
 
         _loadImagefromUrl: function (url) {
-            logger.debug(this.id + "._loadImagefromUrl");
+            mx.logger.debug(this.id + "._loadImagefromUrl");
 
             if (url !== "" && typeof url !== "undefined" && url !== null) {
                 this._imageNode.onerror = lang.hitch(this, this._setToDefaultImage);
@@ -121,7 +121,7 @@ define([
         },
 
         _resizeImage: function () {
-            logger.debug(this.id + "._resizeImage");
+            mx.logger.debug(this.id + "._resizeImage");
             if (!this._imageNode) {
                 return;
             }
@@ -140,7 +140,7 @@ define([
         },
 
         _setToDefaultImage: function () {
-            logger.debug(this.id + "._setToDefaultImage");
+            mx.logger.debug(this.id + "._setToDefaultImage");
             if (this._imageNode) {
                 this._imageNode.onerror = null; //do not catch exceptions when loading default
                 var isAbsolutePath = 
@@ -156,7 +156,7 @@ define([
         },
 
         _execClick: function (index) {
-            logger.debug(this.id + "._execClick");
+            mx.logger.debug(this.id + "._execClick");
             if (this._contextObj !== null && this._imageNode) {
                 if (this.clickmicroflow !== "") {
                     mx.ui.action(this.clickmicroflow, {
@@ -183,7 +183,7 @@ define([
         },
 
         _resetSubscriptions: function () {
-            logger.debug(this.id + "._resetSubscriptions");
+            mx.logger.debug(this.id + "._resetSubscriptions");
             this.unsubscribeAll();
 
             if (this._contextObj) {
@@ -197,7 +197,7 @@ define([
         },
 
         _executeCallback: function (cb, from) {
-            logger.debug(this.id + "._executeCallback" + (from ? " from " + from : ""));
+            mx.logger.debug(this.id + "._executeCallback" + (from ? " from " + from : ""));
             if (cb && typeof cb === "function") {
                 cb();
             }

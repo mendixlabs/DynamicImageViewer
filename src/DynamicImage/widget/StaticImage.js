@@ -14,12 +14,12 @@ define([
         templateString: widgetTemplate,
 
         postCreate: function () {
-            logger.debug(this.id + ".postCreate");
+            mx.logger.debug(this.id + ".postCreate");
             domAttr.set(this._imageNode,"src",this.defaultImage || "");
             domAttr.set(this._imageNode,"alt",this.alt || "");
         },
         update: function (obj, callback) {
-            logger.debug(this.id + ".update");
+            mx.logger.debug(this.id + ".update");
 
             this._contextObj = obj;
             this._resetSubscriptions();
@@ -27,7 +27,7 @@ define([
         },
 
         _updateRendering: function (callback) {
-            logger.debug(this.id + "._updateRendering");
+            mx.logger.debug(this.id + "._updateRendering");
 
             if (this.imageurl !== "") {
                 var isAbsolutePath = 
@@ -53,7 +53,7 @@ define([
         },
 
         _resetSubscriptions: function () {
-            logger.debug(this.id + "._resetSubscriptions");
+            mx.logger.debug(this.id + "._resetSubscriptions");
             this.unsubscribeAll();
 
             if (this._contextObj) {
@@ -67,7 +67,7 @@ define([
         },
 
         _executeCallback: function (cb, from) {
-            logger.debug(this.id + "._executeCallback" + (from ? " from " + from : ""));
+            mx.logger.debug(this.id + "._executeCallback" + (from ? " from " + from : ""));
             if (cb && typeof cb === "function") {
                 cb();
             }
