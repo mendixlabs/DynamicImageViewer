@@ -5,67 +5,43 @@ Image Viewer
 
 **Note: Per version 5.0 we remove the Mobile Dynamic Imageviewer and Mobile Static Imageviewer, as there is no difference with the normal ones. This is breaking, do not update if you use those two**
 
-## Description
+## 1 Introduction
 
-The image viewer package provides the possibility to display images using URLs. Those URLs can be constructed dynamically, or be be predefined in the modeler. To 'just' display an image, without having a System.Image object, this package is just what you are looking for. Last but not least the viewer supports cross-browser proportional scaling.
+The [Image Viewer](https://marketplace.mendix.com/link/component/65122/) widget displays an image and optionally performs an on-click action (enlarging to mobile-friendly, opening a page, or calling a mircoflow).
 
-## Typical usage scenario
+### 1.1 Features
 
-- Display images from a remote URL (like facebook or MxID)
-- Display images not from Mendix in your application
-- Display images in a pagewith a predefined, fixed URL.
-- Display images based on a calculated URL.
-- Just display an image in your application, based on a modeler image or a predefined URL.
+* Supports different data sources:
+	* Set a static image
+	* Retrieve an image from a static URL
+	* Retrieve an image from the URL attribute of a context object
+	* Retrieve an image from **System.Images**
+* Supports the following actions:
+	* Enlarge and pinch zoom
+	* Open page
+	* Call a microflow or nanoflow
 
-## Features and limitations
+### 1.2 Demo App
 
-- Display images based on a URL, either predefined or extracted from your domain model
-- The image viewer can display images derived from System.Image as well
+For a demo app that has been deployed with these widgets, see [here](https://imageviewer.mxapps.io/).
 
-## Installation
+## 2 Usage
 
-Import the widget to your project and add the widget inside a dataview. Configure the properties to determine how the widget will behave in your application.
+The widget requires a context via the following available data sources:
 
-### Properties
-
----
-
-#### Alt Caption
-
-Alternative caption which will be shown when the image cannot be loaded.
-
-#### Click Action
-
-This microflow will be invoked when the image is clicked. The return value is ignored.
-
-#### Height & Width
-
-Maximum height and/or width of the image in pixels.
-
-#### Image URL
-
-This image can be shown if the image cannot be found, is loading or if the image attribute is not defined.
-
-#### Image attribute
-
-If set, this fields provides the image URL of an image. This property overrides the Image URL property. The final URL (src) of the image then becomes the concatenation: <Path prefix><Image attribute value><Path postfix>.
-
-#### Link attribute
-
-This fields provides the URL of the website which should be opened when the image is clicked.
-
-#### Link target
-
-Defines where the link (see Link attribute) should be opened.
-
-#### Tooltip attribute
-
-This attribute will be used as the tooltip hover text for the image.
-
-#### Path prefix
-
-If set, this path will be prefixed before the image URL.
-
-#### Path postfix
-
-If set, this path will be append after the image URL.
+* Dynamic image
+	* For the **Data source** option of the **General** tab, select the dynamic image
+	* The widget will pick the image from the context object (context object should inherit from the **system.image** entity)
+	* Refer to the **Appearance** section for configuring the height and width
+* Dynamic URL attribute
+	* For the **Data source** option of the **General** tab, select the dynamic URL
+	* Select the attribute from the context objext that contains the URL of the image
+	* Refer to the **Appearance** section for configuring the height and width
+* Static URL
+	* For the **Data source** option of the **General** tab, select the static URL
+	* Specify the URL that points to the image (a URL outside the Mendix Platform)
+	* Refer to the **Appearance** section for configuring the height and width
+* Static image
+	* For the **Data source** option of the **General** tab, select the static image
+	* Click **Select** to add static images from Studio Pro
+	* Refer to the **Appearance** section for configuring the height and width
